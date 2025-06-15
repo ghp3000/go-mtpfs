@@ -93,8 +93,7 @@ func (d *Device) GetPathString() string {
 			str = str + "." + strconv.Itoa(d.path[i])
 		}
 	}
-	str = str + ":" + strconv.Itoa(int(d.ifaceDescr.InterfaceNumber))
-	str = str + "." + strconv.Itoa(int(d.ifaceDescr.AlternateSetting))
+	str = str + ":1." + strconv.Itoa(int(d.ifaceDescr.InterfaceNumber))
 	return str
 }
 func (d *Device) sendMaxPacketSize() int {
