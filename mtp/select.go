@@ -200,17 +200,24 @@ func selectDeviceByFilter(cands []*Device, filter Filter, debug bool) (*Device, 
 		return nil, fmt.Errorf("could not get configuration, %v", err)
 	}
 	if config != cand.configValue {
-
 		if err := cand.h.SetConfiguration(cand.configValue); err != nil {
 			return nil, fmt.Errorf("could not set configuration of %v: %v",
 				cand, err)
 		}
 	}
+	cand.USBDebug = debug
+	cand.DataDebug = debug
+	cand.MTPDebug = debug
+	if err = cand.Configure(); err != nil {
+		cand.Close()
+		cand.Done()
+		return nil, err
+	}
 	return cand, nil
 }
 
 // SelectDevice returns opened MTP device that matches the given pattern.
-func SelectDevice(pattern string, path string) (*Device, error) {
+func SelectDevice(pattern string) (*Device, error) {
 	c := usb.NewContext()
 
 	devs, err := FindDevices(c)
