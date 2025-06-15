@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -20,6 +21,8 @@ type Device struct {
 
 	claimed bool
 
+	busNum uint8 //usb bus number
+	path   []int // path to device
 	// split off descriptor?
 	devDescr    usb.DeviceDescriptor
 	ifaceDescr  usb.InterfaceDescriptor
@@ -81,7 +84,19 @@ func (e RCError) Error() string {
 func (d *Device) fetchMaxPacketSize() int {
 	return d.dev.GetMaxPacketSize(d.fetchEP)
 }
-
+func (d *Device) GetPathString() string {
+	str := strconv.Itoa(int(d.busNum))
+	for i := 0; i < len(d.path); i++ {
+		if i == 0 {
+			str = str + "-" + strconv.Itoa(d.path[i])
+		} else {
+			str = str + "." + strconv.Itoa(d.path[i])
+		}
+	}
+	str = str + ":" + strconv.Itoa(int(d.ifaceDescr.InterfaceNumber))
+	str = str + "." + strconv.Itoa(int(d.ifaceDescr.AlternateSetting))
+	return str
+}
 func (d *Device) sendMaxPacketSize() int {
 	return d.dev.GetMaxPacketSize(d.sendEP)
 }
@@ -126,6 +141,7 @@ func (d *Device) Close() error {
 }
 
 // Done releases the libusb device reference.
+// 从libusb中释放设备引用
 func (d *Device) Done() {
 	d.dev.Unref()
 	d.dev = nil
