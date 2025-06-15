@@ -35,7 +35,7 @@ func main() {
 	}
 	mountpoint := flag.Arg(0)
 
-	dev, err := mtp.SelectDevice(*deviceFilter, "")
+	dev, err := mtp.SelectDevice(*deviceFilter)
 	if err != nil {
 		log.Fatalf("detect failed: %v", err)
 	}

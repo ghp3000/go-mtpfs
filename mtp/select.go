@@ -9,6 +9,7 @@ import (
 	"github.com/ghp3000/usb"
 )
 
+// Filter 返回true=选中该设备，否则不选择
 type Filter func(*Device) bool
 
 func candidateFromDeviceDescriptor(d *usb.Device) *Device {

@@ -403,7 +403,9 @@ func (d *Device) RunTransaction(req *Container, rep *Container,
 		_, ok2 := err.(SyncError)
 		_, ok1 := err.(usb.Error)
 		if ok1 || ok2 {
-			log.Printf("fatal error %v; closing connection.", err)
+			if d.USBDebug {
+				log.Printf("fatal error %v; closing connection.", err)
+			}
 			d.Close()
 		}
 		return err
@@ -689,7 +691,9 @@ func (d *Device) Configure() error {
 	}
 
 	if err != nil {
-		log.Printf("OpenSession failed: %v; attempting reset", err)
+		if d.USBDebug {
+			log.Printf("OpenSession failed: %v; attempting reset", err)
+		}
 		if d.h != nil {
 			d.h.Reset()
 		}
