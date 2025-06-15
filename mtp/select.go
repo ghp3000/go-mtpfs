@@ -157,7 +157,7 @@ func selectDevice(cands []*Device, pattern string) (*Device, error) {
 	return found[0], nil
 }
 
-func selectDeviceByFilter(cands []*Device, filter Filter, debug bool) (*Device, error) {
+func selectDeviceByFilter(cands []*Device, filter Filter) (*Device, error) {
 	var found []*Device
 	for _, cand := range cands {
 		if err := cand.Open(); err != nil {
@@ -205,14 +205,6 @@ func selectDeviceByFilter(cands []*Device, filter Filter, debug bool) (*Device, 
 				cand, err)
 		}
 	}
-	cand.USBDebug = debug
-	cand.DataDebug = debug
-	cand.MTPDebug = debug
-	if err = cand.Configure(); err != nil {
-		cand.Close()
-		cand.Done()
-		return nil, err
-	}
 	return cand, nil
 }
 
@@ -230,7 +222,7 @@ func SelectDevice(pattern string) (*Device, error) {
 
 	return selectDevice(devs, pattern)
 }
-func SelectDeviceByFilter(filter Filter, debug bool) (*Device, error) {
+func SelectDeviceByFilter(filter Filter) (*Device, error) {
 	c := usb.NewContext()
 
 	devs, err := FindDevices(c)
@@ -241,7 +233,7 @@ func SelectDeviceByFilter(filter Filter, debug bool) (*Device, error) {
 		return nil, fmt.Errorf("no MTP devices found")
 	}
 
-	return selectDeviceByFilter(devs, filter, debug)
+	return selectDeviceByFilter(devs, filter)
 }
 
 // SelectDeviceForDebugging returns opened MTP device that matches the given pattern and debug information are set true
