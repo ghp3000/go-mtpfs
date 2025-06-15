@@ -134,6 +134,10 @@ func selectDevice(cands []*Device, pattern string) (*Device, error) {
 	}
 
 	if len(found) > 1 {
+		for _, cand := range found {
+			cand.Close()
+			cand.Done()
+		}
 		return nil, fmt.Errorf("mtp: more than 1 device: %s", strings.Join(ids, ","))
 	}
 
