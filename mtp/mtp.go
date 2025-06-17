@@ -183,6 +183,7 @@ func (d *Device) Open() error {
 	}
 
 	if err = d.claim(); err != nil {
+		d.Close()
 		return err
 	}
 
