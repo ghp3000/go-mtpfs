@@ -182,7 +182,9 @@ func (d *Device) Open() error {
 		return err
 	}
 
-	d.claim()
+	if err = d.claim(); err != nil {
+		return err
+	}
 
 	if d.ifaceDescr.InterfaceStringIndex == 0 {
 		// Some devices have no interface field, so we'll hardcode ones
